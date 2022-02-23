@@ -50,7 +50,7 @@ DEFAULT_JOB = {
 
 
 DEFAULT_RELATION_NAME = "metrics-endpoint"
-RELATION_INTERFACE_NAME = "prometheus_scrape"
+RELATION_INTERFACE_NAME = "prometheus-scrape"
 
 DEFAULT_ALERT_RULES_RELATIVE_PATH = "./src/prometheus_alert_rules"
 

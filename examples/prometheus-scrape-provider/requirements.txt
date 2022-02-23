@@ -1,0 +1,2 @@
+ops
+file://{{ lib_path }}#egg=prometheus-scrape

@@ -1,0 +1,12 @@
+# Copyright 2022 Canonical Ltd.
+# See LICENSE file for licensing details.
+name: prometheus-scrape-consumer
+summary: test
+description: test
+tags:
+  - test
+series:
+  - focal
+requires:
+  metrics-endpoint:
+    interface: prometheus-scrape
