@@ -42,8 +42,8 @@ setup(
     },
     include_package_data=True,
     entry_points={
-        "ops_reactive_interface.provides": "prometheus-scrape = prometheus_scrape:MetricsEndpointProvider",
-        "ops_reactive_interface.requires": "prometheus-scrape = prometheus_scrape:MetricsEndpointConsumer",
+        "ops_reactive_interface.provides": "prometheus-scrape = prometheus_scrape:MetricsEndpointProvider",  # noqa
+        "ops_reactive_interface.requires": "prometheus-scrape = prometheus_scrape:MetricsEndpointConsumer",  # noqa
         "pytest11": [
             "prometheus-scrape-test-charm = prometheus_scrape.pytest_plugin",
         ],
