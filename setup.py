@@ -26,11 +26,18 @@ setup(
     },
     package_data={
         "prometheus_scrape.examples": [
-            "../examples/prometheus-scrape-provider/*",
-            "../examples/prometheus-scrape-provider/src/*",
-            "../examples/prometheus-scrape-provider/src/prometheus_alert_rules/*"
-            "../examples/prometheus-scrape-consumer/*",
-            "../examples/prometheus-scrape-consumer/src/*",
+            # Charmed Operator Framework
+            "../examples/operator/prometheus-scrape-provider/*",
+            "../examples/operator/prometheus-scrape-provider/src/*",
+            "../examples/operator/prometheus-scrape-provider/src/prometheus_alert_rules/*",
+            "../examples/operator/prometheus-scrape-consumer/*",
+            "../examples/operator/prometheus-scrape-consumer/src/*",
+            # reactive framework
+            "../examples/reactive/prometheus-scrape-provider/*",
+            "../examples/reactive/prometheus-scrape-provider/reactive/*",
+            "../examples/reactive/prometheus-scrape-provider/reactive/prometheus_alert_rules/*",
+            "../examples/reactive/prometheus-scrape-consumer/*",
+            "../examples/reactive/prometheus-scrape-consumer/reactive/*",
         ],
     },
     include_package_data=True,
@@ -39,6 +46,6 @@ setup(
         "ops_reactive_interface.requires": "prometheus-scrape = prometheus_scrape:MetricsEndpointConsumer",
         "pytest11": [
             "prometheus-scrape-test-charm = prometheus_scrape.pytest_plugin",
-        ]
+        ],
     },
 )

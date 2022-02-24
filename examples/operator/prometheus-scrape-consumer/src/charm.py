@@ -11,7 +11,7 @@ from pathlib import Path
 import yaml
 from ops.charm import CharmBase
 from ops.main import main
-from ops.model import ActiveStatus, MaintenanceStatus, BlockedStatus
+from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus
 
 from prometheus_scrape import MetricsEndpointConsumer
 
@@ -27,7 +27,9 @@ class PrometheusScrapeConsumerCharm(CharmBase):
         self.metrics_consumer = MetricsEndpointConsumer(self)
 
         self.framework.observe(self.on.install, self._on_install)
-        self.framework.observe(self.metrics_consumer.on.targets_changed, self._configure)
+        self.framework.observe(
+            self.metrics_consumer.on.targets_changed, self._configure
+        )
         self.unit.status = ActiveStatus("unit is ready")
 
     def _on_install(self, _):
@@ -56,7 +58,9 @@ class PrometheusScrapeConsumerCharm(CharmBase):
             yaml.dump(config, file)
 
         try:
-            subprocess.check_call(["prometheus.promtool", "check", "config", str(prometheus_config)])
+            subprocess.check_call(
+                ["prometheus.promtool", "check", "config", str(prometheus_config)]
+            )
             subprocess.check_call(["snap", "restart", "prometheus"])
         except subprocess.SubprocessError:
             with open(prometheus_config, "w") as file:

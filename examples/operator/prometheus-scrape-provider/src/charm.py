@@ -24,7 +24,9 @@ class PrometheusScrapeProviderCharm(CharmBase):
         jobs = [
             {
                 "scrape_interval": self.model.config["scrape-interval"],
-                "static_configs": [{"targets": ["*:9090"], "labels": {"name": self.unit.name}}],
+                "static_configs": [
+                    {"targets": ["*:9090"], "labels": {"name": self.unit.name}}
+                ],
             }
         ]
         self.prometheus = MetricsEndpointProvider(self, jobs=jobs)

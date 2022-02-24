@@ -1,9 +1,8 @@
-import shutil
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Union
 
 import pytest
-
 
 try:
     from importlib.resources import path as resource_path
@@ -39,7 +38,13 @@ class PrometheusScrapeCharms:
         self._ops_test = ops_test
         self._provider_operator = None
 
-    def render(self, charm_resource: str, lib_path: Path):
+    def render(self, charm_resource: str, lib_path: Union[str, Path]):
+        """Rendering the charms for testing purpose.
+
+        :param charm_resource: it's name of charm in examples
+        :param lib_path: it's path to prometheus-scrape library, Path should be provided
+        only for charms build with charmcraft
+        """
         with resource_path("prometheus_scrape", "examples") as path:
             charm_dst_path = self._ops_test.render_charm(
                 path / charm_resource,

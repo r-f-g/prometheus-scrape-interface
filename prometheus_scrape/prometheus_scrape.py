@@ -1266,28 +1266,20 @@ class MetricsEndpointProvider(Object):
             charm, relation_name, RELATION_INTERFACE_NAME, RelationRole.provides
         )
 
-        try:
-            alert_rules_path = _resolve_dir_against_charm_path(charm, alert_rules_path)
-        except InvalidAlertRulePathError as e:
-            logger.warning(
-                "Invalid Prometheus alert rules folder at %s: %s",
-                e.alert_rules_absolute_path,
-                e.message,
-            )
-
         super().__init__(charm, relation_name)
         self.topology = ProviderTopology.from_charm(charm)
 
         self._charm = charm
-        self._alert_rules_path = alert_rules_path
+        self._alert_rules_path = None
+        self.set_alert_path(alert_rules_path)
         self._relation_name = relation_name
-        # sanitize job configurations to the supported subset of parameters
-        jobs = [] if jobs is None else jobs
-        self._jobs = [_sanitize_scrape_configuration(job) for job in jobs]
+        self._jobs = None
+        if jobs is not None:
+            self.set_jobs(jobs)
 
         events = self._charm.on[self._relation_name]
-        self.framework.observe(events.relation_joined, self._set_scrape_job_spec)
-        self.framework.observe(events.relation_changed, self._set_scrape_job_spec)
+        self.framework.observe(events.relation_joined, self.set_scrape_job_spec)
+        self.framework.observe(events.relation_changed, self.set_scrape_job_spec)
 
         # dirty fix: set the ip address when the containers start, as a workaround
         # for not being able to lookup the pod ip
@@ -1297,9 +1289,28 @@ class MetricsEndpointProvider(Object):
                 self._set_unit_ip,
             )
 
-        self.framework.observe(self._charm.on.upgrade_charm, self._set_scrape_job_spec)
+        self.framework.observe(self._charm.on.upgrade_charm, self.set_scrape_job_spec)
 
-    def _set_scrape_job_spec(self, event):
+    def set_jobs(self, jobs: list):
+        """Set jobs."""
+        # sanitize job configurations to the supported subset of parameters
+        self._jobs = [_sanitize_scrape_configuration(job) for job in jobs]
+
+    def set_alert_path(self, alert_rules_path):
+        """Set alert rules' path."""
+        try:
+            self._alert_rules_path = _resolve_dir_against_charm_path(
+                self._charm, alert_rules_path
+            )
+        except InvalidAlertRulePathError as e:
+            logger.warning(
+                "Invalid Prometheus alert rules folder at %s: %s",
+                e.alert_rules_absolute_path,
+                e.message,
+            )
+            self._alert_rules_path = alert_rules_path
+
+    def set_scrape_job_spec(self, event=None):
         """Ensure scrape target information is made available to prometheus.
 
         When a metrics provider charm is related to a prometheus charm, the

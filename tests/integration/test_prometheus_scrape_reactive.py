@@ -12,16 +12,17 @@ async def test_build_and_deploy(ops_test, prometheus_scrape_charms):
     lib_path = await ops_test.build_lib(".")
     logger.info("Building charms")
     charms = await ops_test.build_charms(
+        # lib_path as string will skip creating tmp folder and changing path to /root/project/...
         prometheus_scrape_charms.render(
-            "operator/prometheus-scrape-provider", lib_path
+            "reactive/prometheus-scrape-consumer", str(lib_path)
         ),
         prometheus_scrape_charms.render(
-            "operator/prometheus-scrape-consumer", lib_path
+            "reactive/prometheus-scrape-provider", str(lib_path)
         ),
     )
     logger.info("Rendering bundle")
     bundle = ops_test.render_bundle(
-        "tests/data/bundle-operator.yaml",
+        "tests/data/bundle-reactive.yaml",
         charms=charms,
     )
     logger.info("Deploying bundle")
