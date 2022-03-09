@@ -1,8 +1,8 @@
 applications:
   prometheus-scrape-provider:
-    charm: {{ charms["prometheus-scrape-provider"] }}
+    charm: {{ prometheus_scrape_provider }}
     num_units: 1
 
   prometheus-scrape-consumer:
-    charm: {{ charms["prometheus-scrape-consumer"] }}
+    charm: {{ prometheus_scrape_consumer }}
     num_units: 1

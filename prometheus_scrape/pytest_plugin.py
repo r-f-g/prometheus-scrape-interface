@@ -1,23 +1,7 @@
-from contextlib import contextmanager
 from pathlib import Path
 from typing import Union
 
 import pytest
-
-try:
-    from importlib.resources import path as resource_path
-except ImportError:
-    # Shims for importlib_resources and pkg_resources to behave like the stdlib
-    # version from 3.7+.
-    try:
-        from importlib_resources import path as resource_path
-    except ImportError:
-        from pkg_resources import resource_filename
-
-        @contextmanager
-        def resource_path(package, resource):
-            rf = resource_filename(package, resource)
-            yield Path(rf)
 
 
 @pytest.fixture(scope="module")
@@ -45,10 +29,10 @@ class PrometheusScrapeCharms:
         :param lib_path: it's path to prometheus-scrape library, Path should be provided
         only for charms build with charmcraft
         """
-        with resource_path("prometheus_scrape", "examples") as path:
-            charm_dst_path = self._ops_test.render_charm(
-                path / charm_resource,
-                include=["wheelhouse.txt", "requirements.txt"],
-                context={"lib_path": lib_path},
-            )
-            return charm_dst_path
+        path = Path(__file__).parent.parent / "examples"
+        charm_dst_path = self._ops_test.render_charm(
+            path / charm_resource,
+            include=["wheelhouse.txt", "requirements.txt"],
+            context={"lib_path": lib_path},
+        )
+        return charm_dst_path

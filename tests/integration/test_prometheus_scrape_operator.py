@@ -11,10 +11,12 @@ async def test_build_and_deploy(ops_test, prometheus_scrape_charms):
     logger.info("Building prometheus-scrape interface")
     lib_path = await ops_test.build_lib(".")
     logger.info("Building charms")
-    charms = await ops_test.build_charms(
-        prometheus_scrape_charms.render(
-            "operator/prometheus-scrape-provider", lib_path
-        ),
+    # NOTE (rgildein): Building charms separately due to an issue 554 in charmcraft.
+    # https://github.com/canonical/charmcraft/issues/554
+    charm_provider = await ops_test.build_charm(
+        prometheus_scrape_charms.render("operator/prometheus-scrape-provider", lib_path)
+    )
+    charm_consumer = await ops_test.build_charm(
         prometheus_scrape_charms.render(
             "operator/prometheus-scrape-consumer", lib_path
         ),
@@ -22,7 +24,8 @@ async def test_build_and_deploy(ops_test, prometheus_scrape_charms):
     logger.info("Rendering bundle")
     bundle = ops_test.render_bundle(
         "tests/data/bundle-operator.yaml",
-        charms=charms,
+        prometheus_scrape_provider=charm_provider,
+        prometheus_scrape_consumer=charm_consumer,
     )
     logger.info("Deploying bundle")
     await ops_test.model.deploy(bundle)
