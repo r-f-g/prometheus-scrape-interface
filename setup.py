@@ -14,8 +14,9 @@ setup(
     author="Robert Gildein",
     author_email="robert.gildein@canonical.com",
     install_requires=[
-        "ops>=1.0.0",
+        "ops >= 1.0.0",
         "ops_reactive_interface",
+        "pyaml",
     ],
     packages=[
         "prometheus_scrape",
